@@ -22,6 +22,7 @@ import {
   Logout as LogoutIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
+import Logo from '../assets/react.svg';
 
 const drawerWidth = 240;
 
@@ -81,6 +82,7 @@ export default function Layout() {
           >
             <MenuIcon />
           </IconButton>
+          <img src={Logo} alt="Logo" style={{ height: 40, marginRight: 16 }} />
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             Equipment Management System
           </Typography>

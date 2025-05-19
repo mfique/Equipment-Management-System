@@ -1,3 +1,4 @@
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -9,6 +10,8 @@ import UserList from './pages/UserList';
 import UserForm from './pages/UserForm';
 import Layout from './components/Layout';
 import { AuthProvider } from './contexts/AuthContext';
+import PrivateRoute from './components/PrivateRoute';
+import NotFound from './pages/NotFound';
 
 const theme = createTheme({
   palette: {
@@ -30,7 +33,7 @@ function App() {
         <Router>
           <Routes>
             <Route path="/login" element={<Login />} />
-            <Route path="/" element={<Layout />}>
+            <Route path="/" element={<PrivateRoute><Layout /></PrivateRoute>}>
               <Route index element={<Navigate to="/dashboard" replace />} />
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="equipment" element={<EquipmentList />} />
@@ -39,6 +42,7 @@ function App() {
               <Route path="users" element={<UserList />} />
               <Route path="users/new" element={<UserForm />} />
               <Route path="users/:id" element={<UserForm />} />
+              <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
         </Router>

@@ -1,0 +1,79 @@
+### Get all users
+GET http://localhost:8080/api/users
+Accept: application/json
+
+### Get user by ID
+GET http://localhost:8080/api/users/1
+Accept: application/json
+
+### Create a new user
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "testuser@example.com",
+  "password": "test123",
+  "role": "STAFF"
+}
+
+### Update a user
+PUT http://localhost:8080/api/users/1
+Content-Type: application/json
+
+{
+  "name": "Updated User",
+  "email": "testuser@example.com",
+  "password": "newpassword",
+  "role": "ADMIN"
+}
+
+### Delete a user
+DELETE http://localhost:8080/api/users/1
+
+### Get all equipment
+GET http://localhost:8080/api/equipment
+Accept: application/json
+
+### Get equipment by ID
+GET http://localhost:8080/api/equipment/1
+Accept: application/json
+
+### Create new equipment
+POST http://localhost:8080/api/equipment
+Content-Type: application/json
+
+{
+  "name": "Excavator",
+  "serialNumber": "EXC-12345",
+  "status": "Operational",
+  "lastMaintenance": "2024-05-01",
+  "nextMaintenance": "2024-11-01"
+}
+
+### Update equipment
+PUT http://localhost:8080/api/equipment/1
+Content-Type: application/json
+
+{
+  "name": "Excavator",
+  "serialNumber": "EXC-12345",
+  "status": "Maintenance Required",
+  "lastMaintenance": "2024-05-01",
+  "nextMaintenance": "2024-11-01"
+}
+
+### Delete equipment
+DELETE http://localhost:8080/api/equipment/1
+
+### Get all requests
+GET http://localhost:8080/api/requests
+Accept: application/json
+
+### Get all returns
+GET http://localhost:8080/api/returns
+Accept: application/json
+
+### Get all allocation logs
+GET http://localhost:8080/api/allocation-logs
+Accept: application/json 
