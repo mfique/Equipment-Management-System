@@ -8,6 +8,8 @@ import EquipmentList from './pages/EquipmentList';
 import EquipmentForm from './pages/EquipmentForm';
 import UserList from './pages/UserList';
 import UserForm from './pages/UserForm';
+import RequestList from './pages/RequestList';
+import RequestForm from './pages/RequestForm';
 import Layout from './components/Layout';
 import { AuthProvider } from './contexts/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
@@ -36,12 +38,22 @@ function App() {
             <Route path="/" element={<PrivateRoute><Layout /></PrivateRoute>}>
               <Route index element={<Navigate to="/dashboard" replace />} />
               <Route path="dashboard" element={<Dashboard />} />
+              
+              {/* Equipment Routes */}
               <Route path="equipment" element={<EquipmentList />} />
               <Route path="equipment/new" element={<EquipmentForm />} />
               <Route path="equipment/:id" element={<EquipmentForm />} />
+              
+              {/* User Routes */}
               <Route path="users" element={<UserList />} />
               <Route path="users/new" element={<UserForm />} />
               <Route path="users/:id" element={<UserForm />} />
+              
+              {/* Request Routes */}
+              <Route path="requests" element={<RequestList />} />
+              <Route path="requests/new" element={<RequestForm />} />
+              <Route path="requests/:id" element={<RequestForm />} />
+              
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>

@@ -7,7 +7,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 import lombok.Data;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Entity
 @Table(name = "users")
@@ -34,11 +33,6 @@ public class User {
     }
 
     public void setPassword(String password) {
-        // Hash the password if it's not already hashed
-        if (password != null && !password.startsWith("$2a$")) {
-            this.password = new BCryptPasswordEncoder().encode(password);
-        } else {
-            this.password = password;
-        }
+        this.password = password;
     }
 } 

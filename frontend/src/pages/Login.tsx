@@ -7,25 +7,19 @@ import {
   TextField,
   Button,
   Paper,
-  Alert,
 } from '@mui/material';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      await login(email, password);
-      navigate('/dashboard');
-    } catch (err) {
-      setError('Invalid username or password');
-    }
+    await login(email, password);
+    navigate('/dashboard');
   };
 
   return (
@@ -47,11 +41,6 @@ export default function Login() {
           <Typography component="h2" variant="h6" sx={{ mt: 2 }}>
             Sign in
           </Typography>
-          {error && (
-            <Alert severity="error" sx={{ mt: 2, width: '100%' }}>
-              {error}
-            </Alert>
-          )}
           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: '100%' }}>
             <TextField
               margin="normal"

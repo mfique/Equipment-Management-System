@@ -9,29 +9,37 @@ import {
   MenuItem,
   CircularProgress,
   Alert,
+  Grid,
 } from '@mui/material';
 import axios from 'axios';
+import { useAuth } from '../contexts/AuthContext';
 
 interface User {
   id?: number;
-  username: string;
+  name: string;
   email: string;
-  password?: string;
+  password: string;
   role: string;
 }
 
-const roleOptions = ['ADMIN', 'USER', 'MANAGER'];
+const roleOptions = [
+  { value: 'ADMIN', label: 'Administrator' },
+  { value: 'STAFF', label: 'Staff' },
+];
+
+const API_URL = 'http://localhost:8080/api';
 
 export default function UserForm() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user: currentUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [user, setUser] = useState<User>({
-    username: '',
+    name: '',
     email: '',
     password: '',
-    role: 'USER',
+    role: 'STAFF',
   });
 
   useEffect(() => {
@@ -43,11 +51,15 @@ export default function UserForm() {
   const fetchUser = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`/api/users/${id}`);
-      const { password, ...userData } = response.data;
-      setUser(userData);
+      const response = await axios.get(`${API_URL}/users/${id}`);
+      const data = response.data;
+      setUser({
+        ...data,
+        password: '', // Don't show the hashed password
+      });
     } catch (err) {
       setError('Failed to load user details');
+      console.error('Error fetching user:', err);
     } finally {
       setLoading(false);
     }
@@ -58,13 +70,14 @@ export default function UserForm() {
     try {
       setLoading(true);
       if (id && id !== 'new') {
-        await axios.put(`/api/users/${id}`, user);
+        await axios.put(`${API_URL}/users/${id}`, user);
       } else {
-        await axios.post('/api/users', user);
+        await axios.post(`${API_URL}/users`, user);
       }
       navigate('/users');
     } catch (err) {
       setError('Failed to save user');
+      console.error('Error saving user:', err);
     } finally {
       setLoading(false);
     }
@@ -92,66 +105,73 @@ export default function UserForm() {
 
       <Paper sx={{ p: 3 }}>
         <form onSubmit={handleSubmit}>
-          <Box display="flex" flexDirection="column" gap={3}>
-            <TextField
-              label="Username"
-              value={user.username}
-              onChange={(e) => setUser({ ...user, username: e.target.value })}
-              required
-              fullWidth
-            />
-
-            <TextField
-              label="Email"
-              type="email"
-              value={user.email}
-              onChange={(e) => setUser({ ...user, email: e.target.value })}
-              required
-              fullWidth
-            />
-
-            <TextField
-              label="Password"
-              type="password"
-              value={user.password || ''}
-              onChange={(e) => setUser({ ...user, password: e.target.value })}
-              required={id === 'new'}
-              fullWidth
-              helperText={id !== 'new' ? 'Leave blank to keep current password' : ''}
-            />
-
-            <TextField
-              select
-              label="Role"
-              value={user.role}
-              onChange={(e) => setUser({ ...user, role: e.target.value })}
-              required
-              fullWidth
-            >
-              {roleOptions.map((option) => (
-                <MenuItem key={option} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </TextField>
-
-            <Box display="flex" gap={2} justifyContent="flex-end">
-              <Button
-                variant="outlined"
-                onClick={() => navigate('/users')}
-                disabled={loading}
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="Name"
+                value={user.name}
+                onChange={(e) => setUser({ ...user, name: e.target.value })}
+                required
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="Email"
+                type="email"
+                value={user.email}
+                onChange={(e) => setUser({ ...user, email: e.target.value })}
+                required
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="Password"
+                type="password"
+                value={user.password}
+                onChange={(e) => setUser({ ...user, password: e.target.value })}
+                required={id === 'new'}
+                fullWidth
+                helperText={id !== 'new' ? 'Leave blank to keep current password' : ''}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                select
+                label="Role"
+                value={user.role}
+                onChange={(e) => setUser({ ...user, role: e.target.value })}
+                required
+                fullWidth
+                disabled={currentUser?.role !== 'ADMIN'}
               >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                variant="contained"
-                disabled={loading}
-              >
-                {loading ? <CircularProgress size={24} /> : 'Save'}
-              </Button>
-            </Box>
-          </Box>
+                {roleOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12}>
+              <Box display="flex" gap={2} justifyContent="flex-end">
+                <Button
+                  variant="outlined"
+                  onClick={() => navigate('/users')}
+                  disabled={loading}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  disabled={loading}
+                >
+                  {loading ? <CircularProgress size={24} /> : 'Save'}
+                </Button>
+              </Box>
+            </Grid>
+          </Grid>
         </form>
       </Paper>
     </Box>

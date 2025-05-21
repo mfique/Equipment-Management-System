@@ -1,9 +1,11 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
+import axios from 'axios';
 
 interface User {
+  id: number;
+  name: string;
   email: string;
   role: string;
-  name?: string;
 }
 
 interface AuthContextType {
@@ -15,18 +17,27 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const API_URL = 'http://localhost:8080/api';
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [user, setUser] = useState<User | null>(() => {
+    const savedUser = localStorage.getItem('user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
+  const [isAuthenticated, setIsAuthenticated] = useState(() => !!localStorage.getItem('user'));
 
   const login = async (email: string, password: string) => {
-    setUser({ email, role: 'ADMIN' });
+    const response = await axios.post(`${API_URL}/auth/login`, { email, password });
+    const userData = response.data.user;
+    setUser(userData);
     setIsAuthenticated(true);
+    localStorage.setItem('user', JSON.stringify(userData));
   };
 
   const logout = () => {
     setUser(null);
     setIsAuthenticated(false);
+    localStorage.removeItem('user');
   };
 
   return (
